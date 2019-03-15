@@ -1,0 +1,48 @@
+service: gh-ip-grab
+
+plugins:
+  - serverless-localstack
+
+custom:
+  localstack:
+    host: http://localhost
+    stages:
+      - local
+    endpoints:
+      S3: http://localhost:4572
+      DynamoDB: http://localhost:4570
+      CloudFormation: http://localhost:4581
+      Elasticsearch: http://localhost:4571
+      ES: http://localhost:4578
+      SNS: http://localhost:4575
+      SQS: http://localhost:4576
+      Lambda: http://localhost:4574
+      Kinesis: http://localhost:4568
+    lambda:
+      mountCode: True
+
+provider:
+  name: aws
+  region: eu-central-1
+  runtime: python2.7
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "s3:*"
+
+functions:
+  get_ips:
+    handler: handler.main
+    events:
+      - schedule:
+          rate: rate(60 minutes)
+          enabled: true
+
+resources:
+  Resources:
+    IpBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: my-ip-bucket-16522
+    
