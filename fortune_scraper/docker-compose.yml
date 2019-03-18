@@ -1,0 +1,10 @@
+version: "2"
+services:
+  scraper:
+    build: ./scraper
+  webserver:
+    build: ./webserver
+    ports:
+      - "80:80"
+    links:
+      - scraper

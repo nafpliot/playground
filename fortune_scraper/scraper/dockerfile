@@ -1,0 +1,17 @@
+FROM ubuntu:18.04
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update -y && \
+    apt-get install -y python-pip python-dev tzdata && \
+    ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+COPY . /app
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "scraper.py" ]
